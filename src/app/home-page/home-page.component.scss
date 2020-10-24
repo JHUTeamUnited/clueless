@@ -1,0 +1,17 @@
+header {
+    text-align: center;
+}
+
+td {
+    border: 1px solid black;
+    height: 100px;
+    width: 100px;
+}
+
+.board {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: center;
+}
