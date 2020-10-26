@@ -4,10 +4,43 @@ from firebase_admin import credentials, firestore, initialize_app
 # Initialize Flask App
 app = Flask(__name__)
 # Initialize Firestore DB
-cred = credentials.Certificate('key.json')
-default_app = initialize_app(cred)
-db = firestore.client()
-todo_ref = db.collection('todos')
+#cred = credentials.Certificate('key.json')
+#default_app = initialize_app(cred)
+#db = firestore.client()
+#todo_ref = db.collection('todos')
+
+@app.route("/")
+def index():
+    return "hello", 200
+
+@app.route("/move", methods=['POST'])
+def move():
+    location = request.values.get('location')
+    if location:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False}), 200
+
+@app.route("/accuse", methods=['POST'])
+def accuse():
+    player = request.values.get('player')
+    location = request.values.get('location')
+    weapon = request.values.get('weapon')
+    if player and location and weapon:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False}), 200
+
+@app.route("/suggest", methods=['POST'])
+def suggest():
+    player = request.values.get('player')
+    weapon = request.values.get('weapon')
+    if player and weapon:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False}), 200
+
+'''
 @app.route('/add', methods=['POST'])
 def create():
     """
@@ -64,6 +97,8 @@ def delete():
         return jsonify({"success": True}), 200
     except Exception as e:
         return f"An Error Occured: {e}"
+'''
+
 port = int(os.environ.get('PORT', 8080))
 if __name__ == '__main__':
     app.run(threaded=True, host='0.0.0.0', port=port)
