@@ -2,44 +2,67 @@
 <header>
     <h1 style="font-family:sans-serif">Clueless</h1>
     <br/>
-    <div class="board">
-        <table>
-            <tr>
-                <td>Study</td>
-                <td></td>
-                <td>Hall</td>
-                <td></td>
-                <td>Lounge</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Library</td>
-                <td></td>
-                <td>Billiard Room</td>
-                <td></td>
-                <td>Dining Room</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Conservatory</td>
-                <td></td>
-                <td>Ballroom</td>
-                <td></td>
-                <td>Kitchen</td>
-            </tr>
-        </table>
+    <div class="game">
+        <div>
+            <div class="board">
+                <table>
+                    <tr>
+                        <td (click)="clickedCell('Study')">Study</td>
+                        <td></td>
+                        <td>Hall</td>
+                        <td></td>
+                        <td (click)="clickedCell('Lounge')">Lounge</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="background-color:black"></td>
+                        <td></td>
+                        <td style="background-color:black"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td (click)="clickedCell('Library')">Library</td>
+                        <td></td>
+                        <td (click)="clickedCell('Billiard Room')">Billiard Room</td>
+                        <td></td>
+                        <td (click)="clickedCell('Dining Room')">Dining Room</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="background-color:black"></td>
+                        <td></td>
+                        <td style="background-color:black"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td (click)="clickedCell('Conservatory')">Conservatory</td>
+                        <td></td>
+                        <td (click)="clickedCell('Ballroom')">Ballroom</td>
+                        <td></td>
+                        <td (click)="clickedCell('Kitchen')">Kitchen</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="bottom-section">
+                <div class="game-log">
+                    <h2>Game Log</h2>
+                    <p *ngFor="let log of gameLog">{{log}}</p>
+                </div>
+                <div class="game-sheet">
+                    <h2>Game Sheet</h2>
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="suggestion-panel">
+                <h2>Suggestion</h2>
+                <button (click)="clickedCell('Suggestion')" class="my-btn" mat-button color="primary">Submit</button>
+            </div>
+            <div class="accuse-panel">
+                <h2>Accuse</h2>
+                <button (click)="clickedCell('Accuse')" class="my-btn" mat-button color="primary">Submit</button>
+            </div>
+        </div>
     </div>
 
 </header>
