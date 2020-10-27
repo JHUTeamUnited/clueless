@@ -9,7 +9,7 @@
                     <tr>
                         <td (click)="clickedCell('Study')">Study</td>
                         <td></td>
-                        <td>Hall</td>
+                        <td (click)="clickedCell('Hall')">Hall</td>
                         <td></td>
                         <td (click)="clickedCell('Lounge')">Lounge</td>
                     </tr>
@@ -56,11 +56,11 @@
         <div class="right-section">
             <div class="suggestion-panel">
                 <h2>Suggestion</h2>
-                <button (click)="clickedCell('Suggestion')" class="my-btn" mat-button color="primary">Submit</button>
+                <button (click)="postSuggest()" class="my-btn" mat-button color="primary">Submit</button>
             </div>
             <div class="accuse-panel">
                 <h2>Accuse</h2>
-                <button (click)="clickedCell('Accuse')" class="my-btn" mat-button color="primary">Submit</button>
+                <button (click)="postAccuse()" class="my-btn" mat-button color="primary">Submit</button>
             </div>
         </div>
     </div>

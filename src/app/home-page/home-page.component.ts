@@ -12,24 +12,59 @@ export class HomePageComponent {
   gameLog = [];
 
   constructor(private http: HttpClient) { 
-    this.postMove();
   }
 
   clickedCell(square) {
     //this.gameLog += square;
     this.gameLog.push(square);
     console.log(this.gameLog);
+    this.postMove()
   }
 
   postMove() {
-    console.log("Clicked!")
     let httpOptions = {}
     return this.http.post<any>(
       "https://clueless-5ggvsxuoua-uk.a.run.app/move", 
-      {}, 
+      { 'location': 1}, 
       httpOptions).toPromise()
       .then((res) => {
         console.log(res);
+        this.gameLog.push(res.success)
+      }).catch((err) => {
+        console.log("Err " + err)
+      })
+  }
+
+  postAccuse() {
+    let httpOptions = {}
+    return this.http.post<any>(
+      "https://clueless-5ggvsxuoua-uk.a.run.app/accuse", 
+      {  
+        'player': 1, 
+        'location': 1,
+        'weapon': 1
+      }, 
+      httpOptions).toPromise()
+      .then((res) => {
+        console.log(res);
+        this.gameLog.push(res.success)
+      }).catch((err) => {
+        console.log("Err " + err)
+      })
+  }
+
+  postSuggest() {
+    let httpOptions = {}
+    return this.http.post<any>(
+      "https://clueless-5ggvsxuoua-uk.a.run.app/suggest", 
+      { 
+        'player': 1, 
+        'weapon': 1
+      }, 
+      httpOptions).toPromise()
+      .then((res) => {
+        console.log(res);
+        this.gameLog.push(res.success)
       }).catch((err) => {
         console.log("Err " + err)
       })
