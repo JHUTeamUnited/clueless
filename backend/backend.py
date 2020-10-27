@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
+from flask_cors import CORS, cross_origin
 # Initialize Flask App
 app = Flask(__name__)
 # Initialize Firestore DB
@@ -9,33 +10,61 @@ app = Flask(__name__)
 #db = firestore.client()
 #todo_ref = db.collection('todos')
 
+CORS(app)
+
 @app.route("/")
+@cross_origin()
 def index():
+    print(f"Got request from {request.remote_addr} with {request.values}")
     return "hello", 200
 
+@app.route("/newgame", methods=['POST'])
+@cross_origin()
+def newgame():
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    return jsonify({"success":True}), 200
+
+@app.route("/joingame", methods=['POST'])
+@cross_origin()
+def joingame():
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    return jsonify({"success":True}), 200
+
+@app.route("/update", methods=['POST'])
+@cross_origin()
+def update():
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    return jsonify({"success":True}), 200
+
 @app.route("/move", methods=['POST'])
+@cross_origin()
 def move():
-    location = request.values.get('location')
-    if location:
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    if "location" in content:
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False}), 200
 
 @app.route("/accuse", methods=['POST'])
+@cross_origin()
 def accuse():
-    player = request.values.get('player')
-    location = request.values.get('location')
-    weapon = request.values.get('weapon')
-    if player and location and weapon:
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    if "player" in content and "location" in content and "weapon" in content:
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False}), 200
 
 @app.route("/suggest", methods=['POST'])
+@cross_origin()
 def suggest():
-    player = request.values.get('player')
-    weapon = request.values.get('weapon')
-    if player and weapon:
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    if "player" in content and "weapon" in content:
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False}), 200
