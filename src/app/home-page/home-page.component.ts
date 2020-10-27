@@ -30,7 +30,7 @@ export class HomePageComponent {
       .then((res) => {
         console.log(res);
         this.gameLog.push(res.success)
-      }).catch((err) => {
+      }).catch((err) => { 
         console.log("Err " + err)
       })
   }
