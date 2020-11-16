@@ -21,34 +21,25 @@ class Game:
                 self.game_ref.set({
                     u'Name': uuid,
                     u'Active': False,
-                    u'Number_Players': 0
+                    u'Players': []
                     }, merge=True)
             else:
                 print("Game exists. Not reinitializing")
     
     def end_game(self):
-        players_ref = self.game_ref.collection(u"Players")
-        for player in players_ref.stream():
-            player.reference.delete()
         self.game_ref.delete()
 
     def is_active(self):
         return self.game_ref.get().get("Active")
     
     def get_number_players(self):
-        return self.game_ref.get().get("Number_Players")
+        return len(self.game_ref.get().get("Players"))
     
     def add_player(self, player_id):
         if self.is_active() == False:
-            players_ref = self.game_ref.collection(u"Players")
-            player_ref = players_ref.document(player_id)
-            doc = player_ref.get()
-            if not doc.exists: 
-                self.game_ref.update({"Number_Players": self.get_number_players() + 1})
-                player_ref.set({u'UserName': player_id,
-                                u"HasAccused": False})
-            else:
-                print("ERROR: Player exists")
+            players = self.game_ref.get().get(u"Players")
+            players.append({u'UserName': player_id, u"HasAccused": False})
+            self.game_ref.update({u"Players": players})
         else:
             print("ERROR: Cannot add player after game has started")
     
@@ -75,32 +66,29 @@ class Game:
             shuffle(leftover_cards)
 
             # iterate over the players and give cards to players in a loop
-            player_stream = self.game_ref.collection(u"Players").stream() 
-            players = [i.reference for i in player_stream] 
+            player_stream = self.game_ref.get().get(u"Players")
+            players = [i for i in player_stream] 
             player_num = 0 
-
-            cards_for_players = {}
 
             for card in leftover_cards:
                 player = players[player_num]
-                if player in cards_for_players:
-                    cards_for_players[player].append(card)
+                if "Cards" in player:
+                    player["Cards"].append(card)
                 else:
-                    cards_for_players[player] = [card]
+                    player["Cards"] = []
                 player_num = (player_num + 1) % len(players)
 
-            player_starting_locations = sample(room_list,k=len(players))
+            starting_locations = sample(room_list,k=len(players))
             player_num = 0
             # actually add to the databse
-            for player in players:
-                player.update({"Cards": cards_for_players[player],
-                               "Location": player_starting_locations[player_num]})
-                player_num += 1
+            for i in range(len(players)):
+                players[i].update({"Location": starting_locations[i]})
             
-            starting_player = choice(players).get().get("UserName")
+            starting_player = choice(players)["UserName"]
             # set the game to active and set the solutions
             self.game_ref.update({u'Active':True,
                                   u'Turn': starting_player,
+                                  u"Players": players,
                                   u'Answer': {
                                       u'Character': selected_character,
                                       u'Weapon': selected_weapon,
@@ -111,9 +99,11 @@ class Game:
             print("ERROR: TRIED TO START ACTIVE GAME")
     
     def end_move(self):
-        players_ref = self.game_ref.collection(u"Players")
-        player_stream = players_ref.order_by(u"UserName").stream()
-        player_names = [player.get("UserName") for player in player_stream]
+        players = self.game_ref.get().get(u"Players")
+        sorted(players, key=lambda i: i[u"UserName"])
+
+
+        player_names = [player[u"UserName"] for player in players]
 
         current_player_move = self.game_ref.get().get("Turn")
         current_index = player_names.index(current_player_move)
@@ -122,12 +112,13 @@ class Game:
         self.game_ref.update({u'Turn': new_player})
     
     def move_player(self, player_id, location):
-        players_ref = self.game_ref.collection(u"Players")
-        player_ref = players_ref.document(player_id)
-        doc = player_ref.get()
-        if doc.exists:
+        players = self.game_ref.get().get(u"Players")
+        matching = filter(lambda player: player["UserName"] == player_id, players)
+        next_match = next(matching)
+        if next_match:
             if location in room_list or location in hall_list:
-                player_ref.update({"Location": location})
+                next_match.update({"Location": location})
+                self.game_ref.update({u'Players': players})
                 self.end_move()
                 return True
         return False

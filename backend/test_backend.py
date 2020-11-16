@@ -2,7 +2,7 @@ import requests
 import ipdb
 
 host = "http://127.0.0.1:8080"
-host = "https://clueless-5ggvsxuoua-uk.a.run.app"
+#host = "https://clueless-5ggvsxuoua-uk.a.run.app"
 
 def create_game():
     r = requests.post(host+"/createGame", json = {})
