@@ -10,6 +10,11 @@ cred = credentials.Certificate('key.json')
 default_app = initialize_app(cred)
 db = firestore.client()
 games_ref = db.collection('games')
+#simport ipdb
+#sipdb.set_trace()
+#def number_active_games():
+#    stream = games_ref
+#    return len(games_ref.get
 
 class Game:
     def __init__(self, uuid, exists=False):
@@ -21,7 +26,7 @@ class Game:
                 self.game_ref.set({
                     u'Name': uuid,
                     u'Active': False,
-                    u'Players': []
+                    u'Players': [],
                     }, merge=True)
             else:
                 print("Game exists. Not reinitializing")
@@ -112,15 +117,18 @@ class Game:
         self.game_ref.update({u'Turn': new_player})
     
     def move_player(self, player_id, location):
-        players = self.game_ref.get().get(u"Players")
-        matching = filter(lambda player: player["UserName"] == player_id, players)
-        next_match = next(matching)
-        if next_match:
-            if location in room_list or location in hall_list:
-                next_match.update({"Location": location})
-                self.game_ref.update({u'Players': players})
-                self.end_move()
-                return True
+        if self.is_active():
+            #current_playser = self.game_ref.get().get("Turn")
+            #if 
+            players = self.game_ref.get().get(u"Players")
+            matching = filter(lambda player: player["UserName"] == player_id, players)
+            next_match = next(matching)
+            if next_match:
+                if location in room_list or location in hall_list:
+                    next_match.update({"Location": location})
+                    self.game_ref.update({u'Players': players})
+                    self.end_move()
+                    return True
         return False
 
     def guess_murderer(self,weapon, character, room):
@@ -248,10 +256,6 @@ def join_game():
             userEmail = content["userEmail"]
             if userEmail:
                 g.add_player(content["userEmail"])
-                if g.get_number_players() == 3:
-                    print("STARTING GAME")
-                    g.start_game()
-                
                 return jsonify({"success": "Success joining game"}), 200
             else:
                 return jsonify({"success": "Fail: userEmail not specified"}), 200
@@ -266,7 +270,7 @@ def start_game():
     content = request.get_json()
     required_args = ["gameID"]
     if check_requirements(content, required_args):
-        g = get_game(content["game_uuid"],can_create_game=False)
+        g = get_game(content["gameID"],can_create_game=False)
         if g:
             g.start_game()
             return jsonify({"success": "Success: Started Game"}), 200
