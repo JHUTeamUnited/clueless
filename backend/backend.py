@@ -55,10 +55,18 @@ class Game:
             selected_room = choice(room_list)
             selected_character = choice(character_list)
             selected_weapon = choice(weapon_list)
+            
+            # iterate over the players and give cards to players in a loop
+            player_stream = self.game_ref.get().get(u"Players")
+            players = [i for i in player_stream] 
+            
+            # these are the locations and characters for our players
+            starting_locations = sample(room_list,k=len(players))
+            character_selection = sample(character_list,k=len(players))
 
             # the rest of the options
             leftover_room = [i for i in room_list if i != selected_room]
-            leftover_character = [i for i in character_list if i != selected_character]
+            leftover_character = [i for i in character_list if i != selected_character and i not in character_selection]
             leftover_weapon = [i for i in weapon_list if i != selected_weapon]
 
             # add the to an array of leftover items
@@ -68,10 +76,7 @@ class Game:
 
             # shuffle them
             shuffle(leftover_cards)
-
-            # iterate over the players and give cards to players in a loop
-            player_stream = self.game_ref.get().get(u"Players")
-            players = [i for i in player_stream] 
+            
             player_num = 0 
 
             for card in leftover_cards:
@@ -82,11 +87,11 @@ class Game:
                     player["Cards"] = []
                 player_num = (player_num + 1) % len(players)
 
-            starting_locations = sample(room_list,k=len(players))
             player_num = 0
             # actually add to the databse
             for i in range(len(players)):
                 players[i].update({"Location": starting_locations[i]})
+                players[i].update({"Character": character_selection[i]})
             
             starting_player = choice(players)["UserName"]
             # set the game to active and set the solutions
