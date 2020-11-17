@@ -40,9 +40,13 @@ player_ids = ["Luke", "Jim", "Jonathan"]
 for player in player_ids:
     add_player(uuid, player)
 
+import ipdb
+ipdb.set_trace()
+
+start_game(uuid)
+
 from constants import room_list, character_list, weapon_list
 from random import choice
-start_game(uuid)
 for player in player_ids:
     move_player(uuid, player, "Conservatory") #choice(room_list))
     #ipdb.set_trace()

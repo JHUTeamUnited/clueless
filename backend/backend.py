@@ -10,11 +10,9 @@ cred = credentials.Certificate('key.json')
 default_app = initialize_app(cred)
 db = firestore.client()
 games_ref = db.collection('games')
-#simport ipdb
-#sipdb.set_trace()
-#def number_active_games():
-#    stream = games_ref
-#    return len(games_ref.get
+
+def number_active_games():
+    return len(games_ref.get())
 
 class Game:
     def __init__(self, uuid, exists=False):
@@ -27,6 +25,7 @@ class Game:
                     u'Name': uuid,
                     u'Active': False,
                     u'Players': [],
+                    u'DisplayName': f"Game {number_active_games()+1}"
                     }, merge=True)
             else:
                 print("Game exists. Not reinitializing")
