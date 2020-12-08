@@ -108,17 +108,21 @@ class Game:
             print("ERROR: TRIED TO START ACTIVE GAME")
     
     def end_move(self):
-        players = self.game_ref.get().get(u"Players")
-        sorted(players, key=lambda i: i[u"UserName"])
+        if self.is_active():
+            players = self.game_ref.get().get(u"Players")
+            sorted(players, key=lambda i: i[u"UserName"])
 
 
-        player_names = [player[u"UserName"] for player in players]
+            player_names = [player[u"UserName"] for player in players]
 
-        current_player_move = self.game_ref.get().get("Turn")
-        current_index = player_names.index(current_player_move)
-        new_index = (current_index + 1) % len(player_names)
-        new_player = player_names[new_index]
-        self.game_ref.update({u'Turn': new_player})
+            current_player_move = self.game_ref.get().get("Turn")
+            current_index = player_names.index(current_player_move)
+            new_index = (current_index + 1) % len(player_names)
+            new_player = player_names[new_index]
+            self.game_ref.update({u'Turn': new_player})
+            return True
+        else:
+            return False
     
     def move_player(self, player_id, location):
         if self.is_active():
@@ -136,15 +140,57 @@ class Game:
         return False
 
     def guess_murderer(self,weapon, character, room):
-        ans = self.game_ref.get().get("Answer")
-        return weapon == ans["Weapon"] and room == ans["Room"] and character == ans["Character"]  
+        if self.is_active():
+            ans = self.game_ref.get().get("Answer")
+            return weapon == ans["Weapon"] and room == ans["Room"] and character == ans["Character"]  
+        return False
 
-    def accuse(self, player):
-        pass
-        
-    
-    def check_suggestion(self):
-        pass
+    def accuse(self, userEmail, weapon, player, room):
+        if self.is_active():
+            players_list = self.game_ref.get().get(u"Players")
+            ans = self.game_ref.get().get("Answer")
+            options_list = []
+            if weapon != ans["Weapon"]:
+                options_list.append(weapon)
+            if player != ans["Character"]:
+                options_list.append(player) 
+            if room != ans["Room"]:
+                options_list.append(room)
+            
+            from random import shuffle
+            shuffle(options_list)
+            
+            if not options_list:
+                # it's right
+                return True
+            
+            player_index_list = [i for i in range(self.get_number_players())]
+            shuffle(player_index_list)
+
+            card_selected = None
+
+            for i in player_index_list:
+                if card_selected is not None:
+                    continue
+                player = players_list[i]
+                if player["UserName"] == userEmail:
+                    continue
+                cards = player["Cards"]
+                for value in options_list:
+                    if value in cards:
+                        card_selected = value
+                        break
+            
+            if card_selected is not None:
+                print("Didn't find card in selected")
+                return False
+
+            for player in players_list:
+                if player["UserName"] == userEmail:
+                    player["Cards"].append(card_selected)
+                    return False
+        else:
+            return False
 
 local_cached_games = {}
 
@@ -214,12 +260,21 @@ def accuse():
 def suggest():
     content = request.get_json()
     print(f"Got request from {request.remote_addr} with {content}")
-    required_args = ["gameID", "userEmail", "player", "weapon"]
+    required_args = ["gameID", "userEmail", "player", "weapon", "room"]
     if check_requirements(content, required_args):
+        g = get_game(content["gameID"])
+        if g:
+            if g.suggest(content["userEmail"], content["weapon"], content["player"],content["room"]):
+                return jsonify({"success": "Guess Suggest Correct"})
+            else:
+                return jsonify({"success": "Guess Suggest Incorrect"})
+        else:
+            return jsonify({"success": "Fail no such game"})
+
         return jsonify({"success": "Success Suggest"}), 200
     else:
         return jsonify({"success": "Fail Suggest"}), 200
-
+        
 @app.route("/guessMurderer", methods=['POST'])
 @cross_origin()
 def guess_murderer():
