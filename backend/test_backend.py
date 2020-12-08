@@ -22,8 +22,19 @@ def end_game(game_uuid):
     r = requests.post(host+"/endGame", json = {"gameID": game_uuid})
     print(r.json())
 
+def end_turn(game_uuid, player):
+    r = requests.post(host+"/endTurn", json = {"gameID": game_uuid, "userEmail": player})
+    print(r.json())
+
 def guess_murderer(game_uuid, user_id, player, weapon, room):
     r = requests.post(host+"/guessMurderer", json ={"gameID":game_uuid, "userEmail": user_id, "player":player, "weapon":weapon, "room": room})
+    print(r.json())
+    values = r.json()
+    if "Correct" in values["success"]:
+        return True
+
+def suggest(game_uuid, user_id, player, weapon, room):
+    r = requests.post(host+"/suggest", json ={"gameID":game_uuid, "userEmail": user_id, "player":player, "weapon":weapon, "room": room})
     print(r.json())
     values = r.json()
     if "Correct" in values["success"]:
@@ -40,7 +51,6 @@ player_ids = ["Luke", "Jim", "Jonathan"]
 for player in player_ids:
     add_player(uuid, player)
 
-import ipdb
 ipdb.set_trace()
 
 start_game(uuid)
@@ -49,6 +59,7 @@ from constants import room_list, character_list, weapon_list
 from random import choice
 for player in player_ids:
     move_player(uuid, player, "Conservatory") #choice(room_list))
+    end_turn(uuid, player)
     #ipdb.set_trace()
 
 # do this locally not on the server
@@ -62,5 +73,6 @@ def find_the_murderer(game_uuid, players):
                     print(f"It was {j} with the {k} in the {i}")
                     return
 #find_the_murderer(uuid, player_ids)
+ipdb.set_trace()
 
 end_game(uuid)

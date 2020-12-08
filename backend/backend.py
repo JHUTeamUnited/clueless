@@ -107,15 +107,16 @@ class Game:
         else:
             print("ERROR: TRIED TO START ACTIVE GAME")
     
-    def end_move(self):
+    def end_move(self,player):
         if self.is_active():
             players = self.game_ref.get().get(u"Players")
             sorted(players, key=lambda i: i[u"UserName"])
-
-
             player_names = [player[u"UserName"] for player in players]
 
             current_player_move = self.game_ref.get().get("Turn")
+            if player != current_player_move:
+                print(current_player_move + " -> " + player)
+                return False
             current_index = player_names.index(current_player_move)
             new_index = (current_index + 1) % len(player_names)
             new_player = player_names[new_index]
@@ -135,7 +136,7 @@ class Game:
                 if location in room_list or location in hall_list:
                     next_match.update({"Location": location})
                     self.game_ref.update({u'Players': players})
-                    self.end_move()
+                    #self.end_move()
                     return True
         return False
 
@@ -145,7 +146,7 @@ class Game:
             return weapon == ans["Weapon"] and room == ans["Room"] and character == ans["Character"]  
         return False
 
-    def accuse(self, userEmail, weapon, player, room):
+    def suggest(self, userEmail, weapon, player, room):
         if self.is_active():
             players_list = self.game_ref.get().get(u"Players")
             ans = self.game_ref.get().get("Answer")
@@ -190,6 +191,7 @@ class Game:
             for player in players_list:
                 if player["UserName"] == userEmail:
                     player["Cards"].append(card_selected)
+                    self.game_ref.update({u'Players': players_list})
                     return [player_contributing, card_selected]
         else:
             return False
@@ -299,6 +301,24 @@ def guess_murderer():
             return jsonify({"success": "Fail no such game"})
     else:
         return jsonify({"success": "Fail Guess Murderer"}), 200
+
+@app.route("/endTurn", methods=['POST'])
+@cross_origin()
+def end_turn():
+    content = request.get_json()
+    print(f"Got request from {request.remote_addr} with {content}")
+    required_args = ["gameID", "userEmail"]
+    if check_requirements(content, required_args):
+        g = get_game(content["gameID"])
+        if g:
+            if g.end_move(content["userEmail"]):
+                return jsonify({"success": "End Turn Correct"})
+            else:
+                return jsonify({"success": "End Turn Incorrect"})
+        else:
+            return jsonify({"success": "Fail no such game"})
+    else:
+        return jsonify({"success": "Fail End Turn"}), 200
 
 @app.route("/createGame", methods=['POST'])
 @cross_origin()
