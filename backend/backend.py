@@ -168,6 +168,7 @@ class Game:
             shuffle(player_index_list)
 
             card_selected = None
+            player_contributing = None
 
             for i in player_index_list:
                 if card_selected is not None:
@@ -179,16 +180,17 @@ class Game:
                 for value in options_list:
                     if value in cards:
                         card_selected = value
+                        player_contributing = player["UserName"]
                         break
             
-            if card_selected is not None:
+            if card_selected is None or player_contributing is None:
                 print("Didn't find card in selected")
                 return False
 
             for player in players_list:
                 if player["UserName"] == userEmail:
                     player["Cards"].append(card_selected)
-                    return False
+                    return [player_contributing, card_selected]
         else:
             return False
 
@@ -264,10 +266,15 @@ def suggest():
     if check_requirements(content, required_args):
         g = get_game(content["gameID"])
         if g:
-            if g.suggest(content["userEmail"], content["weapon"], content["player"],content["room"]):
-                return jsonify({"success": "Guess Suggest Correct"})
+            values = g.suggest(content["userEmail"], content["weapon"], content["player"],content["room"])
+            if values == False:
+                print("Something went wrong")
+                return jsonify({"success": "Something went wrong"}), 200
+            elif values == True:
+                return jsonify({"success": "Suggestion was correct"}), 200
             else:
-                return jsonify({"success": "Guess Suggest Incorrect"})
+                player_contributing, card_selected = values
+                return jsonify({"success": "Guess Suggest Correct", "playerContributing": player_contributing, "cardSelected": card_selected}), 200
         else:
             return jsonify({"success": "Fail no such game"})
 
