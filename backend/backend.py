@@ -171,20 +171,29 @@ class Game:
             card_selected = None
             player_contributing = None
 
+            def returned_card(cards, options, current_player_cards):
+                for option in options:
+                    if option in cards and option not in current_player_cards:
+                        return option
+            current_player = None
+            for player in players_list:
+                if player["UserName"] == userEmail:
+                    current_player = player
+                    
+            current_player_cards = current_player["Cards"]
+
+
             for i in player_index_list:
-                if card_selected is not None:
-                    continue
                 player = players_list[i]
                 if player["UserName"] == userEmail:
                     continue
                 cards = player["Cards"]
-                for value in options_list:
-                    if value in cards:
-                        card_selected = value
-                        player_contributing = player["UserName"]
-                        break
+                card = returned_card(cards, options_list, current_player_cards)
+                if card:
+                    card_selected = card
+                    player_contributing = player["UserName"]
             
-            if card_selected is None or player_contributing is None:
+            if card_selected is None:
                 print("Didn't find card in selected")
                 return False
 
@@ -194,12 +203,13 @@ class Game:
                     self.game_ref.update({u'Players': players_list})
                     return [player_contributing, card_selected]
         else:
+            print("suggest returned False")
             return False
 
 local_cached_games = {}
 
 def get_game(uuid,can_create_game=False):
-    if uuid in local_cached_games:
+    if uuid in local_cached_games.keys():
         return local_cached_games[uuid]
     doc = games_ref.document(uuid).get()
     if doc.exists:
@@ -326,7 +336,8 @@ def create_game():
     from uuid import uuid1
     game_uuid = str(uuid1())
     print(f"Created game with uuid {game_uuid}")
-    local_cached_games[game_uuid] = Game(uuid=game_uuid)
+    g = get_game(uuid=game_uuid, can_create_game=True)
+#    local_cached_games[game_uuid] = Game(uuid=game_uuid)
     return jsonify({"game_uuid": game_uuid})
 
 @app.route("/joinGame", methods=['POST'])
