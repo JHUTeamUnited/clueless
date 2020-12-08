@@ -66,7 +66,7 @@ class Game:
 
             # the rest of the options
             leftover_room = [i for i in room_list if i != selected_room]
-            leftover_character = [i for i in character_list if i != selected_character and i not in character_selection]
+            leftover_character = [i for i in character_list if i != selected_character] #and i not in character_selection]
             leftover_weapon = [i for i in weapon_list if i != selected_weapon]
 
             # add the to an array of leftover items
