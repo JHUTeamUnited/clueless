@@ -4,8 +4,8 @@ header {
 
 td {
     border: 1px solid black;
-    height: 75px;
-    width: 75px;
+    height: 120px;
+    width: 120px;
 }
 
 .board {
@@ -39,6 +39,7 @@ td {
     width: 50%;
     height: 200px;
     border: 1px solid black;
+    overflow: auto;
 }
 
 .right-section {
@@ -47,13 +48,19 @@ td {
 }
 
 .suggestion-panel {
-    height: 50%;
+    height: 38%;
     width: 300px;
     border: 1px solid black;
 }
 
 .accuse-panel {
-    height: 50%;
+    height: 38%;
+    width: 300px;
+    border: 1px solid black;
+}
+
+.end-panel {
+    height: 24%;
     width: 300px;
     border: 1px solid black;
 }
@@ -62,4 +69,16 @@ td {
     color: white !important;
     background-color: steelblue !important;
     border: 1px thin black;
+}
+
+.horizontal {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.game-btn {
+    padding: 5px;
+    margin: 10px;
 }

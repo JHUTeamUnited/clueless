@@ -2,44 +2,170 @@
 <header>
     <h1 style="font-family:sans-serif">Clueless</h1>
     <br/>
+    <div>
+        <button *ngIf="!inGame" (click)="postCreateGame()" class="my-btn" mat-button color="primary">Create Game</button>
+    </div>
+
+    <div *ngIf="!inGame">
+        <div *ngFor="let g of games">
+            <div class="horizontal">
+                <br/>
+                <p>
+                    {{g.DisplayName}}
+                </p>
+                <button (click)="postJoinGame(g.Name)" class="my-btn game-btn" mat-button color="primary">Join Game</button>
+                <!-- <button (click)="postStartGame(game.Name)" class="my-btn game-btn" mat-button color="primary">Start Game</button> -->
+                <!-- <button (click)="postEndGame(game.Name)" class="my-btn game-btn" mat-button color="primary">End Game</button> -->
+         
+            </div>
+        </div>
+    
+    </div>
+
+    <div *ngIf="inGame">
+        <h3>{{game.DisplayName}}</h3>
+        <h3 *ngIf="hasGameStarted">It's {{whoseTurn}} turn!</h3>
+        <h3 *ngIf="hasGameStarted">You are {{myCharacter}}</h3>
+        <h3 *ngIf="!hasGameStarted">Game Has Not Started!</h3>
+        <button *ngIf="!hasGameStarted" (click)="postStartGame()" class="my-btn game-btn" mat-button color="primary">Start Game</button>
+        <button (click)="postEndGame()" class="my-btn game-btn" mat-button color="primary">End Game</button>
+         
+    </div>
+
+    <div>
+        <h3>{{messageBoard}}</h3>
+    </div>
     <div class="game">
         <div>
             <div class="board">
                 <table>
                     <tr>
-                        <td (click)="clickedCell('Study')">Study</td>
-                        <td></td>
-                        <td (click)="clickedCell('Hall')">Hall</td>
-                        <td></td>
-                        <td (click)="clickedCell('Lounge')">Lounge</td>
+                        <td (click)="clickedCell('Study')">
+                            <p>Study</p>
+                            <p *ngFor="let study of nameStudy">
+                                {{study}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall A')">
+                            <p *ngFor="let a of nameA">
+                                {{a}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall')">
+                            <p>Hall</p>
+                            <p *ngFor="let hall of nameHall">
+                                {{hall}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall B')">
+                            <p *ngFor="let b of nameB">
+                                {{b}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Lounge')">
+                            <p>Lounge</p>
+                            <p *ngFor="let lounge of nameLounge">
+                                {{lounge}}
+                            </p>
+                        </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td (click)="clickedCell('Hall C')">
+                            <p *ngFor="let c of nameC">
+                                {{c}}
+                            </p>
+                        </td>
                         <td style="background-color:black"></td>
-                        <td></td>
+                        <td (click)="clickedCell('Hall D')">
+                            <p *ngFor="let d of nameD">
+                                {{d}}
+                            </p>
+                        </td>
                         <td style="background-color:black"></td>
-                        <td></td>
+                        <td (click)="clickedCell('Hall E')">
+                            <p *ngFor="let e of nameE">
+                                {{e}}
+                            </p>
+                        </td>
                     </tr>
                     <tr>
-                        <td (click)="clickedCell('Library')">Library</td>
-                        <td></td>
-                        <td (click)="clickedCell('Billiard Room')">Billiard Room</td>
-                        <td></td>
-                        <td (click)="clickedCell('Dining Room')">Dining Room</td>
+                        <td (click)="clickedCell('Library')">
+                            <p>Library</p>
+                            <p *ngFor="let library of nameLibrary">
+                                {{library}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall F')">
+                            <p *ngFor="let f of nameF">
+                                {{f}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Billiard')">
+                            <p>Billiard Room</p>
+                            <p *ngFor="let billiard of nameBilliard">
+                                {{billiard}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall G')">
+                            <p *ngFor="let g of nameG">
+                                {{g}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Dining')">
+                            <p>Dining Room</p>
+                            <p *ngFor="let dining of nameDining">
+                                {{dining}}
+                            </p>
+                        </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td (click)="clickedCell('Hall H')">
+                            <p *ngFor="let h of nameH">
+                                {{h}}
+                            </p>
+                        </td>
                         <td style="background-color:black"></td>
-                        <td></td>
+                        <td (click)="clickedCell('Hall I')">
+                            <p *ngFor="let i of nameI">
+                                {{i}}
+                            </p>
+                        </td>
                         <td style="background-color:black"></td>
-                        <td></td>
+                        <td (click)="clickedCell('Hall J')">
+                            <p *ngFor="let j of nameJ">
+                                {{j}}
+                            </p>
+                        </td>
                     </tr>
                     <tr>
-                        <td (click)="clickedCell('Conservatory')">Conservatory</td>
-                        <td></td>
-                        <td (click)="clickedCell('Ballroom')">Ballroom</td>
-                        <td></td>
-                        <td (click)="clickedCell('Kitchen')">Kitchen</td>
+                        <td (click)="clickedCell('Conservatory')">
+                            <p>Conservatory</p>
+                            <p *ngFor="let conservatory of nameConservatory">
+                                {{conservatory}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall K')">
+                            <p *ngFor="let k of nameK">
+                                {{k}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Ballroom')">
+                            <p>Ballroom</p>
+                            <p *ngFor="let ballroom of nameBallRoom">
+                                {{ballroom}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Hall L')">
+                            <p *ngFor="let l of nameL">
+                                {{l}}
+                            </p>
+                        </td>
+                        <td (click)="clickedCell('Kitchen')">
+                            <p>Kitchen</p>
+                            <p *ngFor="let kitchen of nameKitchen">
+                                {{kitchen}}
+                            </p>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -50,17 +176,109 @@
                 </div>
                 <div class="game-sheet">
                     <h2>Game Sheet</h2>
+                    <p *ngFor="let card of cards">{{card}}</p>
                 </div>
             </div>
         </div>
         <div class="right-section">
             <div class="suggestion-panel">
-                <h2>Suggestion</h2>
-                <button (click)="postSuggest()" class="my-btn" mat-button color="primary">Submit</button>
+                <h2>Guess the Answer!</h2>
+
+                <div class="selected-murder">
+                    <label>Characters  </label>
+                    <select class="form-control" [(ngModel)]="selectedCharacter">
+                        <option value="None"></option>
+                        <option value="Miss Scarlet">Miss Scarlet</option>
+                        <option value="Mrs. Peacock">Mrs. Peacock</option>
+                        <option value="Professor Plum">Professor Plum</option>
+                        <option value="Mr. Boddy">Mr. Boddy</option>
+                        <option value="Mrs. White">Mrs. White</option>
+                        <option value="Colonel Mustard">Colonel Mustard</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Rooms  </label>
+                    <select class="form-control" [(ngModel)]="selectedRoom">
+                        <option value="None"></option>
+                        <option value="Study">Study</option>
+                        <option value="Hall">Hall</option>
+                        <option value="Lounge">Lounge</option>
+                        <option value="Library">Library</option>
+                        <option value="Billiard">Billiard</option>
+                        <option value="Dining">Dining</option>
+                        <option value="Conservatory">Conservatory</option>
+                        <option value="Ballroom">Ballroom</option>
+                        <option value="Kitchen">Kitchen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Weapons  </label>
+                    <select class="form-control" [(ngModel)]="selectedWeapon">
+                        <option value="None"></option>
+                        <option value="Wrench">Wrench</option>
+                        <option value="Candle Stick">Candle Stick</option>
+                        <option value="Rope">Rope</option>
+                        <option value="Lead Pipe">Lead Pipe</option>
+                        <option value="Dagger">Dagger</option>
+                        <option value="Revolver">Revolver</option>
+                    </select>
+                </div>
+                <br/>
+                <button (click)="postGuessMurderer()" class="my-btn" mat-button color="primary">Submit</button>
             </div>
             <div class="accuse-panel">
                 <h2>Accuse</h2>
-                <button (click)="postAccuse()" class="my-btn" mat-button color="primary">Submit</button>
+
+                <div class="selected-murder">
+                    <label>Characters  </label>
+                    <select class="form-control" [(ngModel)]="selectedCharacter">
+                        <option value="None"></option>
+                        <option value="Miss Scarlet">Miss Scarlet</option>
+                        <option value="Mrs. Peacock">Mrs. Peacock</option>
+                        <option value="Professor Plum">Professor Plum</option>
+                        <option value="Mr. Boddy">Mr. Boddy</option>
+                        <option value="Mrs. White">Mrs. White</option>
+                        <option value="Colonel Mustard">Colonel Mustard</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Rooms  </label>
+                    <select class="form-control" [(ngModel)]="selectedRoom">
+                        <option value="None"></option>
+                        <option value="Study">Study</option>
+                        <option value="Hall">Hall</option>
+                        <option value="Lounge">Lounge</option>
+                        <option value="Library">Library</option>
+                        <option value="Billiard">Billiard</option>
+                        <option value="Dining">Dining</option>
+                        <option value="Conservatory">Conservatory</option>
+                        <option value="Ballroom">Ballroom</option>
+                        <option value="Kitchen">Kitchen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Weapons  </label>
+                    <select class="form-control" [(ngModel)]="selectedWeapon">
+                        <option value="None"></option>
+                        <option value="Wrench">Wrench</option>
+                        <option value="Candle Stick">Candle Stick</option>
+                        <option value="Rope">Rope</option>
+                        <option value="Lead Pipe">Lead Pipe</option>
+                        <option value="Dagger">Dagger</option>
+                        <option value="Revolver">Revolver</option>
+                    </select>
+                </div>
+                <br/>
+
+                <button (click)="postSuggest()" class="my-btn" mat-button color="primary">Submit</button>
+            </div>
+            <div class="end-panel">
+                <button (click)="postEndTurn()" style="margin: 50px;" class="my-btn" mat-button color="primary">End Turn</button>
             </div>
         </div>
     </div>

@@ -17,6 +17,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFireAuthModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    FormsModule
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]
